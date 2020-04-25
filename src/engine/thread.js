@@ -159,7 +159,13 @@ class Thread {
          * Target of this thread.
          * @type {?Target}
          */
-        this.target = null;
+        this._target = null;
+
+        /**
+         * Fake target to be used temporarily inside "run as" block.
+         * @type {Array.<Target>}
+        */
+        this._fakeTargets = [];
 
         /**
          * The Blocks this thread will execute.
@@ -235,6 +241,37 @@ class Thread {
     }
 
     /**
+     * The target the block should execute on.
+     * @return {?Target} The target.
+    */
+    get target () {
+        console.log("target requested", this._fakeTargets.length, this._fakeTargets[0]);
+        return this._fakeTargets.length ? this._fakeTargets[0] : this._target;
+    }
+
+    set target (value) {
+        this._target = value;
+    }
+
+    /**
+     * Sets "fake" target.
+     * Fake target is used inside "run as" block.
+     * @param {?Target} target The fake target.
+    */
+    setFakeTarget (target) {
+        this._fakeTargets.unshift(target);
+        console.log("set, fake targets: ", this._fakeTargets);
+    }
+
+    /**
+     * Escape one layer of fake target.
+    */
+    escapeFakeTarget () {
+        this._fakeTargets.shift();
+        console.log("escape, fake targets: ", this._fakeTargets);
+    }
+
+    /**
      * Push stack and update stack frames appropriately.
      * @param {string} blockId Block ID to push to stack.
      */
@@ -273,7 +310,7 @@ class Thread {
     stopThisScript () {
         let blockID = this.peekStack();
         while (blockID !== null) {
-            const block = this.target.blocks.getBlock(blockID);
+            const block = this._target.blocks.getBlock(blockID);
             if (typeof block !== 'undefined' && block.opcode === 'procedures_call') {
                 break;
             }
@@ -376,7 +413,7 @@ class Thread {
      * where execution proceeds from one block to the next.
      */
     goToNextBlock () {
-        const nextBlockId = this.target.blocks.getNextBlock(this.peekStack());
+        const nextBlockId = this._target.blocks.getNextBlock(this.peekStack());
         this.reuseStackForNextBlock(nextBlockId);
     }
 
@@ -390,7 +427,7 @@ class Thread {
         let callCount = 5; // Max number of enclosing procedure calls to examine.
         const sp = this.stack.length - 1;
         for (let i = sp - 1; i >= 0; i--) {
-            const block = this.target.blocks.getBlock(this.stack[i]);
+            const block = this._target.blocks.getBlock(this.stack[i]);
             if (block.opcode === 'procedures_call' &&
                 block.mutation.proccode === procedureCode) {
                 return true;

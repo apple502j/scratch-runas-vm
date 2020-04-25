@@ -224,7 +224,7 @@ class VirtualMachine extends EventEmitter {
     getPlaygroundData () {
         const instance = this;
         // Only send back thread data for the current editingTarget.
-        const threadData = this.runtime.threads.filter(thread => thread.target === instance.editingTarget);
+        const threadData = this.runtime.threads.filter(thread => thread._target === instance.editingTarget);
         // Remove the target key, since it's a circular reference.
         const filteredThreadData = JSON.stringify(threadData, (key, value) => {
             if (key === 'target' || key === 'blockContainer') return;

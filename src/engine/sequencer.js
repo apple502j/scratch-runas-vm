@@ -206,7 +206,7 @@ class Sequencer {
                 // Increment the number of times execute is called.
                 this.runtime.profiler.increment(executeProfilerId);
             }
-            if (thread.target === null) {
+            if (thread._target === null) {
                 this.retireThread(thread);
             } else {
                 execute(this, thread);
@@ -286,7 +286,7 @@ class Sequencer {
             branchNum = 1;
         }
         const currentBlockId = thread.peekStack();
-        const branchId = thread.target.blocks.getBranch(
+        const branchId = thread._target.blocks.getBranch(
             currentBlockId,
             branchNum
         );
@@ -305,7 +305,7 @@ class Sequencer {
      * @param {!string} procedureCode Procedure code of procedure to step to.
      */
     stepToProcedure (thread, procedureCode) {
-        const definition = thread.target.blocks.getProcedureDefinition(procedureCode);
+        const definition = thread._target.blocks.getProcedureDefinition(procedureCode);
         if (!definition) {
             return;
         }
@@ -325,8 +325,8 @@ class Sequencer {
         } else {
             // Look for warp-mode flag on definition, and set the thread
             // to warp-mode if needed.
-            const definitionBlock = thread.target.blocks.getBlock(definition);
-            const innerBlock = thread.target.blocks.getBlock(
+            const definitionBlock = thread._target.blocks.getBlock(definition);
+            const innerBlock = thread._target.blocks.getBlock(
                 definitionBlock.inputs.custom_block.block);
             let doWarp = false;
             if (innerBlock && innerBlock.mutation) {

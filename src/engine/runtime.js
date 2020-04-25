@@ -1613,7 +1613,7 @@ class Runtime extends EventEmitter {
      */
     _restartThread (thread) {
         const newThread = new Thread(thread.topBlock);
-        newThread.target = thread.target;
+        newThread.target = thread._target;
         newThread.stackClick = thread.stackClick;
         newThread.updateMonitor = thread.updateMonitor;
         newThread.blockContainer = thread.blockContainer;
@@ -2139,7 +2139,7 @@ class Runtime extends EventEmitter {
         // Find all scripts that should be glowing.
         for (let i = 0; i < searchThreads.length; i++) {
             const thread = searchThreads[i];
-            const target = thread.target;
+            const target = thread._target;
             if (target === this._editingTarget) {
                 const blockForThread = thread.blockGlowInFrame;
                 if (thread.requestScriptGlowInFrame || thread.stackClick) {
