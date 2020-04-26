@@ -1787,7 +1787,7 @@ class Runtime extends EventEmitter {
                 // If `restartExistingThreads` is true, we should stop
                 // any existing threads starting with the top block.
                 for (let i = 0; i < this.threads.length; i++) {
-                    if (this.threads[i].target === target &&
+                    if (this.threads[i]._target === target &&
                         this.threads[i].topBlock === topBlockId &&
                         // stack click threads and hat threads can coexist
                         !this.threads[i].stackClick) {
@@ -1799,7 +1799,7 @@ class Runtime extends EventEmitter {
                 // If `restartExistingThreads` is false, we should
                 // give up if any threads with the top block are running.
                 for (let j = 0; j < this.threads.length; j++) {
-                    if (this.threads[j].target === target &&
+                    if (this.threads[j]._target === target &&
                         this.threads[j].topBlock === topBlockId &&
                         // stack click threads and hat threads can coexist
                         !this.threads[j].stackClick &&
@@ -1949,7 +1949,7 @@ class Runtime extends EventEmitter {
             if (this.threads[i] === optThreadException) {
                 continue;
             }
-            if (this.threads[i].target === target) {
+            if (this.threads[i]._target === target) {
                 this._stopThread(this.threads[i]);
             }
         }

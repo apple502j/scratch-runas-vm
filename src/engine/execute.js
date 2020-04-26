@@ -63,8 +63,8 @@ const handleReport = function (resolvedValue, sequencer, thread, blockCached, la
             // true and used to be false, or the stack was activated explicitly
             // via stack click
             if (!thread.stackClick) {
-                const hasOldEdgeValue = thread.target.hasEdgeActivatedValue(currentBlockId);
-                const oldEdgeValue = thread.target.updateEdgeActivatedValue(
+                const hasOldEdgeValue = thread._target.hasEdgeActivatedValue(currentBlockId);
+                const oldEdgeValue = thread._target.updateEdgeActivatedValue(
                     currentBlockId,
                     resolvedValue
                 );
@@ -123,7 +123,7 @@ const handlePromise = (primitiveReportedValue, sequencer, thread, blockCached, l
                 if (popped === null) {
                     return;
                 }
-                nextBlockId = thread.target.blocks.getNextBlock(popped);
+                nextBlockId = thread._target.blocks.getNextBlock(popped);
                 if (nextBlockId !== null) {
                     // A next block exists so break out this loop
                     break;
